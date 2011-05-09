@@ -22,6 +22,7 @@ public class GestoreFilm implements GestoreFilmLocal {
         Film f = new Film();
         f.setTitoloFilm(titolo);
         f.setRegistaFilm(regista);
+        f.setAnno(1927);
         filmFacade.create(f);
     }
    @Override
