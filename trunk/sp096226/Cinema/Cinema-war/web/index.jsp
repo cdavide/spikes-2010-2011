@@ -15,7 +15,7 @@
     <body>
         <h1>INSERIMENTO FILM</h1>
         <h2>Richiesta di informazioni</h2>
-        <form action="/EnterpriseApplicationProva-war/FilmServlet" method="POST">
+        <form action="/Cinema-war/FilmServlet" method="POST">
             <h2> Scegli l'azione che vuoi effettuare:</h2>
             <p>Titolo Film da inserire: <input type="text" name="titolo">
                 <input type="submit" name="submit" value="Inserisci">
