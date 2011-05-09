@@ -48,6 +48,7 @@ public class FilmServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             String formAction = request.getParameter("metodo");
+            out.println(formAction);
             if (formAction.equals("insertFilm")) {
                 gestoreFilm.addFilm(request.getParameter("titolo"), request.getParameter("regista"));
                 
