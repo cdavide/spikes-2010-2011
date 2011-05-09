@@ -2,25 +2,27 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package web;
 
-import ejb.GestoreFilmLocal;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import ejb.GestoreFilmLocal;
+import ejb.Film;
 
 /**
  *
- * @author sp096226
+ * @author Stefano
  */
+@WebServlet(name = "FilmServlet", urlPatterns = {"/FilmServlet"})
 public class FilmServlet extends HttpServlet {
     @EJB
-    private GestoreFilmLocal gestoreFilmBean;
+    private GestoreFilmLocal gestoreFilm;
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -30,25 +32,34 @@ public class FilmServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        int i;
         try {
-            gestoreFilmBean.inserisciFilm("Thor");
+            //t è il titolo del film appena inserito in index.jsp
+            String t = request.getParameter("titolo");
+            gestoreFilm.inserisciFilm(t);
+            String listaFilms = gestoreFilm.listaFilm();
+            
+            
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet FilmServlet</title>");  
             out.println("</head>");
             out.println("<body>");
+            out.println("<h1>ECCO DOVE SI TROVA LA SERVLET:</h1>");
             out.println("<h1>Servlet FilmServlet at " + request.getContextPath () + "</h1>");
-            out.println("<h1>Film inseriti:</h1>");
-            out.println(gestoreFilmBean.listaFilm());
+            out.println("<p>TITOLO DEL FILM INSERITO: "+ t +"");
+            out.println("<p>LISTA FILM INSERITI: "+ listaFilms +"");
+            out.println("</p>"); 
             out.println("</body>");
             out.println("</html>");
-        } finally { 
+
+        } finally {            
             out.close();
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -60,9 +71,9 @@ public class FilmServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -73,8 +84,8 @@ public class FilmServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+            processRequest(request, response);
     }
 
     /** 
@@ -85,5 +96,4 @@ public class FilmServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
