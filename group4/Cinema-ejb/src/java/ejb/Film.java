@@ -22,7 +22,7 @@ public class Film implements Serializable {
     private Long id;
     String titolo;
     String regista;
-
+    int anno; 
     public Long getId() {
         return id;
     }
@@ -37,6 +37,14 @@ public class Film implements Serializable {
     
     public void setRegistaFilm(String regista){
         this.regista = regista;
+    }
+
+    public int getAnno() {
+        return anno;
+    }
+
+    public void setAnno(int anno) {
+        this.anno = anno;
     }
     
     
