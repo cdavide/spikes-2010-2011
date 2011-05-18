@@ -4,33 +4,42 @@
  */
 package web;
 
-import ejb.FilmFacade;
+import ejb.Film;
 import ejb.GestoreFilmLocal;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.ObjectMessage;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-/* per completare lo spike creare aggiungifilm, dalla servlet invocare gestorefilm 
- * (session bean stateless) magari faceno una form per inserire un nuovo film
- * 
- 
- 
- */
+
 /**
- *
+ * Questa servlet rappresenta le chiamate JMS, in teoria dovrebbe essere una applicazione esterna 
  * @author dave
  */
-@WebServlet(name = "FilmServlet", urlPatterns = {"/FilmServlet"})
-public class FilmServlet extends HttpServlet {
+@WebServlet(name = "PostJmsServlet", urlPatterns = {"/PostJmsServlet"})
+public class PostJmsServlet extends HttpServlet {
     @EJB
     private GestoreFilmLocal gestoreFilm;
-
+    @Resource(mappedName = "jms/FilmMsg")
+    private Queue filmMsg;
+    @Resource(mappedName = "jms/FilmMsgFactory")
+    private ConnectionFactory filmMsgFactory;
+    
+    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -43,7 +52,6 @@ public class FilmServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            out.println("questo non lo stampa");
             out.println("<html>");
             
             out.println("<head>");
@@ -53,8 +61,16 @@ public class FilmServlet extends HttpServlet {
             String formAction = request.getParameter("metodo");
             out.println(formAction);
             if (formAction.equals("insertFilm")) {
-                gestoreFilm.addFilm(request.getParameter("titolo"), request.getParameter("regista"));
-                
+                Film f = new Film();
+                f.setTitoloFilm(request.getParameter("titolo"));
+                f.setRegistaFilm(request.getParameter("regista"));
+                f.setAnno(1927);
+                try {
+                sendJMSMessageToFilmMsg((Object) f);
+                }catch(JMSException ex){
+                    System.out.println("Exception!");
+                    
+                }
                 out.println("Film inserito correttamente");
                 out.println("Lista Film Inseriti:");
             out.println(gestoreFilm.listFilm());
@@ -65,10 +81,6 @@ public class FilmServlet extends HttpServlet {
                 out.println(gestoreFilm.listFilm());
                 
             }
-           
-           
-            
-            
         } finally {            
             out.close();
         }
@@ -109,4 +121,34 @@ public class FilmServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    private Message createJMSMessageForjmsFilmMsg(Session session, Object messageData) throws JMSException {
+        // TODO create and populate message to send
+        
+        ObjectMessage tm = session.createObjectMessage();
+        tm.setObject((Film) messageData);
+        return tm;
+    }
+
+    private void sendJMSMessageToFilmMsg(Object messageData) throws JMSException {
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = filmMsgFactory.createConnection();
+            session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer messageProducer = session.createProducer(filmMsg);
+            messageProducer.send(createJMSMessageForjmsFilmMsg(session, messageData));
+        } finally {
+            if (session != null) {
+                try {
+                    session.close();
+                } catch (JMSException e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.WARNING, "Cannot close session", e);
+                }
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
+    }
 }
