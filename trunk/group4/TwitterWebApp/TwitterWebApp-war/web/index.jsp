@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" 
-        import="twitter.TwitterPostSpike,
+        import="twitter.TweetFromJava,
         twitter.twitteroauth.twitterresponse.*,
         com.sun.jersey.api.client.UniformInterfaceException" %>
 
@@ -9,28 +9,18 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h2>Friends Statuses</h2>
-        <%
-            if (session.getAttribute("oauth_token") == null) {
-                response.sendRedirect("OAuthLogin");
-            } else {
-                TwitterPostSpike twitter = new TwitterPostSpike("xml");
-                twitter.initOAuth(request, response);
-                try {
-                    Statuses resp =
-                        twitter.sendNewDirectMessageFromMe(Statuses.class,"Dave_27","Messaggio di prova da java" );
-                    int i=0;
-                    for (StatusType status : resp.getStatus()) {
-                        out.println("<p>author: <b>"+status.getUser().getName()+
-                                    "</b>("+status.getCreatedAt()+")</p>"+
-                                    "<p><tt>"+status.getText()+"</tt></p>");
-                    }
-                } catch (UniformInterfaceException ex) {
-                    System.out.println(
-                         "Error = "+ex.getResponse().getEntity(String.class));
-                }
-                twitter.close();
-            }
-        %>
+        <h2>Message posting</h2>
+        <form  name="Invoke" action="TwitterServlet" METHOD="GET" />
+        <input type="hidden" name="metodo" value="newTweet">
+        <p>Tweet <input type="text" name="tweet"/> </p>
+        <p>Status id: <input type="text" name="status_id"></p>
+        <p><input type="submit" name="submit" value="OK"></p>
+        </form>
+        <h2>Oauth Authentication</h2>
+        <form  name="Invoke" action="TwitterServlet" METHOD="GET" />
+        <input type="hidden" name="metodo" value="getPermissions">
+        <p><input type="submit" name="submit" value="Oauth Authentication"></p>
+        </form>
+
     </body>
 </html>

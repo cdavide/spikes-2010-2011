@@ -182,8 +182,10 @@ public class TwitterPostSpike {
     @WebServlet(name = "OAuthCallbackServlet", urlPatterns = "/OAuthCallback")
     public static class OAuthCallbackServlet extends HttpServlet {
 
+        @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             response.setContentType("text/html;charset=UTF-8");
+            System.out.println("sono dentro la oauth callback");
             java.io.PrintWriter out = response.getWriter();
             try {
                 String oauth_verifier = request.getParameter("oauth_verifier");
@@ -211,6 +213,7 @@ public class TwitterPostSpike {
                     out.println("   // call any method");
                     out.println("   client.close();");
                     out.println("</pre></p>");
+                    out.println("<a href=\"/TwitterWebApp-war/index.jsp\">Go Home</a>");
                 } else {
                     out.println("Problem to get access token: " + uiEx.getResponse() + ": " + uiEx.getResponse().getEntity(String.class));
                 }
