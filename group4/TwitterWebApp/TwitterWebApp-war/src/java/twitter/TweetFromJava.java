@@ -20,16 +20,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.MultivaluedMap;
 
-/** Jersey REST client generated for REST resource:Twitter OAuth [statuses/friends_timeline.{format}]<br>
+/** Jersey REST client generated for REST resource:Twitter OAuth [statuses/update.{format}]<br>
  *  USAGE:<pre>
- *        TwitterClient client = new TwitterClient();
+ *        TweetFromJava client = new TweetFromJava();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
  *  </pre>
  * @author Davide Concas
  */
-public class TwitterClient {
+public class TweetFromJava {
     private WebResource webResource;
     private Client client;
     private static final String BASE_URI = "http://twitter.com";
@@ -46,30 +46,28 @@ public class TwitterClient {
     private OAuthSecrets oauth_secrets;
     private OAuthClientFilter oauth_filter;
 
-    public TwitterClient(String format) {
+    public TweetFromJava(String format) {
         com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig();
         client = Client.create(config);
-        String resourcePath = java.text.MessageFormat.format("statuses/friends_timeline.{0}", new Object[]{format});
+        String resourcePath = java.text.MessageFormat.format("statuses/update.{0}", new Object[]{format});
         webResource = client.resource(BASE_URI).path(resourcePath);
     }
 
     public void setResourcePath(String format) {
-        String resourcePath = java.text.MessageFormat.format("statuses/friends_timeline.{0}", new Object[]{format});
+        String resourcePath = java.text.MessageFormat.format("statuses/update.{0}", new Object[]{format});
         webResource = client.resource(BASE_URI).path(resourcePath);
     }
 
     /**
      * @param responseType Class representing the response
-     * @param since query parameter
-     * @param since_id query parameter
-     * @param page query parameter
-     * @param count query parameter
+     * @param status form parameter
+     * @param in_reply_to_status_id form parameter
      * @return response object (instance of responseType class)
      */
-    public <T> T getFriendsTimeline(Class<T> responseType, String since, String since_id, String page, String count) throws UniformInterfaceException {
-        String[] queryParamNames = new String[]{"since", "since_id", "page", "count"};
-        String[] queryParamValues = new String[]{since, since_id, page, count};
-        return webResource.queryParams(getQueryOrFormParams(queryParamNames, queryParamValues)).accept(javax.ws.rs.core.MediaType.TEXT_XML).get(responseType);
+    public <T> T updateStatus(Class<T> responseType, String status, String in_reply_to_status_id) throws UniformInterfaceException {
+        String[] formParamNames = new String[]{"status", "in_reply_to_status_id"};
+        String[] formParamValues = new String[]{status, in_reply_to_status_id};
+        return webResource.type(javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED).post(responseType, getQueryOrFormParams(formParamNames, formParamValues));
     }
 
     private MultivaluedMap getQueryOrFormParams(String[] paramNames, String[] paramValues) {
@@ -208,12 +206,12 @@ public class TwitterClient {
                 if (uiEx == null) {
                     out.println("Now, you have successfully authorized this application to access your data.<br><br>");
                     out.println("Usage: <p><pre>");
-                    out.println("   TwitterClient client = new TwitterClient(...);");
+                    out.println("   TweetFromJava client = new TweetFromJava(...);");
                     out.println("   client.initOAuth(httpServletRequest, httpServletResponse);");
                     out.println("   // call any method");
                     out.println("   client.close();");
                     out.println("</pre></p>");
-                    out.println("<a href=\"TwitterWebApp/index.jsp\">Go Home</a>");
+                    out.println("<a href=\"/TwitterWebApp-war/index.jsp\">Go Home</a>");
                 } else {
                     out.println("Problem to get access token: " + uiEx.getResponse() + ": " + uiEx.getResponse().getEntity(String.class));
                 }
