@@ -1,0 +1,17 @@
+#summary tutorial per come usare HTTPS con Glassfish
+#labels SSL,HTTPS
+
+Utilizzare HTTPS con Glassfish è abbastanza semplice, in quanto una volta avviato il server, <i>"DOVREBBE"</i> (notare le virgolette, il maiuscolo, e il corsivo!) bastare collegarsi a:
+{{{
+https://localhost:8181/path/della/servel
+}}}
+Per esempio quindi in caso dello spike Cinema potrebbe essere:
+{{{
+https://localhost:8181/Cinema-war/FirstServlet
+}}}
+
+(La porta potrebbe differire dalla 8181 in alcune versioni di Glassfish, se non è quella potete, quando avviate glassfish da netbeans (generalmente la prima volta che date Run) leggere l'output, lì elencherà 3 http-listner con le rispettive porte... è una di quelle)
+
+Quando vi collegate in https,  verrà richiesto di accettare un certificato scaduto e non valido. Fregatevene e accettate.
+
+e tutto dovrebbe funzionare... :)
