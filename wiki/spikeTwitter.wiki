@@ -1,13 +1,25 @@
-#summary One-sentence summary of this page.
+=Twitter Part=
+Recarsi alla pagina: dev.twitter.com
+Autenticarsi con le proprie credenziali twitter
+Scegliere di creare una nuova applicazione.
+Copilare il form di registrazioe avendo cura di inserire come:
+Applicazion Website:
+http://netbeans.org/OAuthCallback.php?callback_url=http://localhost:8080/TwitterWebApp/
 
-= Introduction =
+Application Callback http://netbeans.org/OAuthCallback.php?callback_url=http://localhost:8080/TwitterWebApp-war/OAuthCallback
 
-Add your content here.
+Application Type: Browser
 
+Application Access: Read & Write
 
-= Details =
+Appuntarsi la {{{Consumer Key}}} e il {{{Consumer Secret}}} forniti da Twitter al momento della registrazione.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+=Netbeans Part=
+Creare un nuovo progetto con lo stesso nome scelto in precedenza (nel nostro caso TwitterWebApp)
+Nella parte war inserire un nuovo RESTful Java Client (New->Other->Web Services -> RESTful Java Client)
+
+Seguire il  wizard avendo cura di selezionare come REST resource IDE registered, successivamente Browse e selezionare il Web service di twitter che vi interessa (nel nostro caso Twitter->Twitter Oauth-> statuses -> update).
+Creare una jsp con un form che permetta al'utente di autenticare l'applicazione con Oauth e di inserire un nuovo Tweet con action la servlet creata con il wizard precedente.
+
+=Execution Part=
+Una volta compilata e avviata l'applicazione autorizzare quando richiesto da Twitter l'accesso al vostro profilo.
