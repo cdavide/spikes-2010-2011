@@ -50,6 +50,7 @@ public class TwitterServlet extends HttpServlet {
                 TweetFromJava twitter = new TweetFromJava("xml");
                 twitter.initOAuth(request, response);
                 try {
+                    
                     Statuses resp =
                         twitter.updateStatus (Statuses.class, request.getParameter("tweet"), request.getParameter("status_id"));
                 } catch (UniformInterfaceException ex) {
