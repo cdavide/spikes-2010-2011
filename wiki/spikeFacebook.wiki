@@ -1,13 +1,25 @@
-#summary One-sentence summary of this page.
+#summary Facebook Spikes
 
 = Introduction =
 
-Add your content here.
-
+Come prima cosa occorre creare, se non ce l'avete già un account su facebook. Dopodichè aggiungere l'applicazione Developers al proprio profilo. Una volta fatto accedendo all'applicazione Developers è possibile creare una propria applicazione. I dettagli possono essere visualizzati qua: http://developers.facebook.com/docs/guides/canvas/
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Una volta creata la vostra applicazione su Facebook potete procedere in diversi modi per sviluppare l'applicazione Java. Le API Java non sono più supportate ufficialmente da Facebook, esistono però delle librerie predefinite in NetBeans (Jersey) che permettono di fare ciò, trovate i singoli passaggi in questa pagina:
+ * http://netbeans.org/kb/docs/websvc/facebook.html
+
+Queste librerie però sono un pò obsolete e poco soddisfacenti, perciò è probabile che vorrete utilizzarne delle altre. Noi abbiamo optato per due librerie indipendenti che implementano tutte le funzioni di cui abbiamo bisogno.
+
+La prima si chiama Scribe (https://github.com/fernandezpablo85/scribe-java) e serve per implementare il protocollo OAauth (http://oauth.net/) utilizzato da Facebook per l'autenticazione. A tal proposito c'è una pagina dove vengono spiegati tutti i passaggi da fare e un'altra che spiega come richiedere l'autorizzazione per l'accesso ai dati dell'utente:
+
+ * http://developers.facebook.com/docs/authentication/
+ * http://developers.facebook.com/docs/authentication/permissions/
+
+L'autorizzazione consiste nell'ottenere un token univoco per ogni utente dopo che questi ci ha fornito l'accesso ai suoi dati.
+
+Ottenuto questo toke è possibile che vogliate accedere ai dati dell'utente. Per fare ciò esiste un'ottima libreria chiamata RestFB (http://restfb.com/) con numerosi esempi.
+
+Le API fornite da Facebook e utilizzabili attraverso RestFB sono:
+ * GraphAPI: http://developers.facebook.com/docs/reference/api/
+ * FQL : http://developers.facebook.com/docs/reference/fql/
