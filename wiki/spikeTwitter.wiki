@@ -1,18 +1,19 @@
+#labels Spike,oauth,twitter
 =Twitter Part=
 Recarsi alla pagina: dev.twitter.com
 Autenticarsi con le proprie credenziali twitter
 Scegliere di creare una nuova applicazione.
-Copilare il form di registrazioe avendo cura di inserire come:
-Applicazion Website:
+Compilare il form di registrazione avendo cura di inserire come:
+*Application Website:
 http://netbeans.org/OAuthCallback.php?callback_url=http://localhost:8080/TwitterWebApp/
 
-Application Callback http://netbeans.org/OAuthCallback.php?callback_url=http://localhost:8080/TwitterWebApp-war/OAuthCallback
+*Application Callback http://netbeans.org/OAuthCallback.php?callback_url=http://localhost:8080/TwitterWebApp-war/OAuthCallback
 
-Application Type: Browser
+*Application Type: Browser
 
-Application Access: Read & Write
+*Application Access: Read & Write
 
-Appuntarsi la {{{Consumer Key}}} e il {{{Consumer Secret}}} forniti da Twitter al momento della registrazione.
+*Appuntarsi la {{{Consumer Key}}} e il {{{Consumer Secret}}} forniti da Twitter al momento della registrazione.
 
 =Netbeans Part=
 Creare un nuovo progetto con lo stesso nome scelto in precedenza (nel nostro caso TwitterWebApp)
