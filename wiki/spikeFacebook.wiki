@@ -23,3 +23,5 @@ Ottenuto questo toke è possibile che vogliate accedere ai dati dell'utente. Per
 Le API fornite da Facebook e utilizzabili attraverso RestFB sono:
  * GraphAPI: http://developers.facebook.com/docs/reference/api/
  * FQL : http://developers.facebook.com/docs/reference/fql/
+
+Per fare delle prove sul vostro pc utilizzandolo come web server a cui Facebook può accedere potreste aver bisogno di utilizzare un servizio come DynDNS : http://www.dyndns.com/support/kb/dyndns.html
