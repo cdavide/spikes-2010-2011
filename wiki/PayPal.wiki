@@ -1,0 +1,113 @@
+#summary Come gestire i pagamenti con PayPal in un'applicazione JavaEE
+
+=PayPal=
+_Nota: tutto lo spike è stato eseguito utilizzando soltanto la sandbox di PayPal, in altre parole non sono stati fatti esperimenti "con soldi veri"_
+
+==PayPal sandbox: registrarsi e creare i conti PayPal di prova==
+ # Registrarsi sul sito https://developer.paypal.com/ per avere accesso alla sandbox di PayPal
+ # Dopo essersi registrati e loggati, cliccare il link _Test Accounts_: da qui potremo creare i conti PayPal di prova che poi potremo associare agli utenti del nostro sito per testare le funzionalità di pagamento
+ # Per ogni conto da creare:
+   * Cliccare su _Preconfigured_
+   * Impostare il tipo di account: Paese, definire se buyer o seller (in particolare, il seller potrà anche avere il ruolo di buyer in una transazione), nome e cognome, e-mail dell'account paypal (paypal aggiungerà a cuiò che scriviamo una stringa casuale), password, tipo di carta, ammontare presente nel conto e cliccare su _Create Account_
+
+==PayPal button==
+A questo punto possiamo creare una JSP da includere nelle pagine da cui vorremo permettere all'utente di pagare, che nell'esempio chiamiamo paypal.jsp.
+Questa JSP conterrà un form che però si presenta dal punto di vista grafico come semplice bottone PayPal
+
+{{{
+<%@page import="entity.PayPal"%>
+
+<%! 
+  //informazioni che dovremo passare a PayPal e che qui recuperiamo come parametri della request
+  //mailSeller e mailBuyer sono le e-mail di due account Paypal creati in precedenza nella sandbox
+  //articolo è una descrizione dell'articolo che il buyer sta acquistando
+  double totale;
+  String mailSeller;
+  String mailBuyer;
+  String nomeBuyer;
+  String cognomeBuyer;
+  String articolo;
+	
+  //opzionale, nel nostro esempio serve per le pagine a cui l'utente torna dopo il pagamento
+  String idPagamento; 
+	
+  //pagine in cui l'utente ritornerà dopo il pagamento, in particolare:
+  //pagina in cui l'utente torna se il pagamento è stato eseguito ed è andato a buon fine
+  String app_return_page;
+  //pagina in cui l'utente torna se annulla il pagamento
+  String app_cancel_page
+
+%>
+
+<%
+  totale = (Double) request.getAttribute("totale");
+  mailSeller = (String) request.getAttribute("mailSeller");
+  mailBuyer = (String) request.getAttribute("mailBuyer");
+  articolo = (String) request.getAttribute("articolo");
+  nomeBuyer = (String) request.getAttribute("nomeBuyer");
+  cognomeBuyer = (String) request.getAttribute("cognomeBuyer");
+  idPagamento = (String) request.getAttribute("idPagamento");
+	
+  //esempi di app_return_page e app_cancel_page
+  app_return_page = "http://localhost:8080/LaMiaWebApp-war/ControllerServlet?action=pagamentoEseguito&idPagamento="+idPagamento;
+  app_cancel_page = "http://localhost:8080/LaMiaWebApp-war/ControllerServlet?action=pagamentoAnnullato&idPagamento="+idPagamento;
+%>
+
+
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_ext-enter">
+  <input type="hidden" name="redirect_cmd" value="_xclick">
+
+  <input type="hidden" name="business" value="<%= mailSeller %>">
+  <input type="hidden" name="item_name" value="<%= articolo %>">
+  <input type="hidden" name="currency_code" value="EUR">
+  <input type="hidden" name="amount" value="<%= totale %>">
+  <input type="hidden" name="no_shipping" value="1">
+  <input type="hidden" name="no_note" value="1">
+  <input type="hidden" name="return" value="<%= app_return_page %>">
+  <input type="hidden" name="cancel_return" value="<%= app_cancel_page %>">
+  <input type="hidden" name="email" value="<%= mailBuyer %>">
+  <input type="hidden" name="first_name" value="<%= nomeBuyer %>">
+  <input type="hidden" name="last_name" value="<%= cognomeBuyer %>">
+
+  <input type="button" class="paypalButton" onclick="this.disabled=true;this.form.submit()">
+
+</form>
+
+	
+}}}
+ 
+==Includere il PayPal button==
+
+Naturalmente, il bottone PayPal verrà a questo punto incluso come una JSP. Poiché questo si apetta del parametri in input nella request, bisogna ricordare di impostarli. Esempio:
+
+{{{
+  <table>
+  <!-- ad esempio, in ogni riga della tabella una voce di spesa -->
+  <!-- <tr> <td>blabla</td> <td>25€</td> </tr> -->
+    <tr>
+      <td>Totale:</td>
+      <td>
+        <div class="paypal">
+	  <span>
+	    <%= totale %> &euro;
+	  </span>
+	  <span>
+	  <% 
+	    //imposto gli attributi per la request
+	    request.setAttribute("totale", totale); 
+	    request.setAttribute("mailSeller", "tom@gmail.com");
+            request.setAttribute("mailBuyer", "jerry@gmail.com");
+	    request.setAttribute("articolo", "formaggio");
+            request.setAttribute("nomeBuyer", "Jerry");
+	    request.setAttribute("cognomeBuyer", "Boh??!");
+	    request.setAttribute("idPagamento", 1234567);
+	  %>
+	  <!-- includiamo la jsp creata prima -->
+	  <jsp:include page="paypal.jsp" />
+	  </span>
+	</div>
+      </td>
+    </tr>
+  </table>
+}}}
